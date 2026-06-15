@@ -1,11 +1,15 @@
-﻿using GymSystem.Configurations;
-using GymSystem.Models;
+﻿using GymSystem.DAL.Configurations;
+using GymSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace GymSystem.Contexts
+namespace GymSystem.DAL.Context
 {
-    public class GYMDBContext:DbContext
+    public class GymDbContext:DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -16,7 +20,7 @@ namespace GymSystem.Contexts
         {
             modelBuilder.ApplyConfiguration<Plan>(new PlanConfigurations());
 
-            
+
         }
 
         public DbSet<Plan> Plans { get; set; }
