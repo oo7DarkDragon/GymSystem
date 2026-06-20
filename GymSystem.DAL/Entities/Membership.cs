@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymSystem.DAL.Entities
 {
-    public class Membership
+    public class Membership : BaseEntity
     {
         public Member Member { get; set; } = null!;
 
@@ -15,7 +15,7 @@ namespace GymSystem.DAL.Entities
 
         public Plan Plan { get; set; } = null!;
 
-        public int PLanId { get; set; }
+        public int PlanId { get; set; }
 
         public DateTime EndDate { get; set; }
 

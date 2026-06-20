@@ -1,7 +1,6 @@
 ﻿using GymSystem.DAL.Context;
 using GymSystem.DAL.Entities;
 using GymSystem.DAL.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +9,13 @@ using System.Threading.Tasks;
 
 namespace GymSystem.DAL.Repositories.Classes
 {
-    public class PlanRepository : GenericRepository<Plan>, IPlanrepository
+    public class MemberRepository : GenericRepository<Member>, IMemberRepository
     {
         private readonly GymDbContext dbContext;
-
-        public PlanRepository(GymDbContext _dbContext) : base(_dbContext)
+        public MemberRepository(GymDbContext dbContext) : base(dbContext)
         {
-            dbContext = _dbContext;
+            this.dbContext = dbContext;
         }
-
-        // Implement any additional methods specific to Plan repository if needed
 
     }
 }

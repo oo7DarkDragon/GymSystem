@@ -11,13 +11,13 @@ namespace GymSystem.DAL.Entities
     {
         public decimal Height { get; set; }
 
-        public decimal weight { get; set; }
+        public decimal Weight { get; set; }
 
         [Required, MaxLength(5)]
         public string BloodType { get; set; } = null!;
 
         [Required, MaxLength(500)]
-        public string? note { get; set; }
+        public string? Note { get; set; }
 
         public Member Member { get; set; } = null!;
 
