@@ -1,3 +1,5 @@
+using GymSystem.BLL.Services.Classes;
+using GymSystem.BLL.Services.Interfaces;
 using GymSystem.DAL.Context;
 using GymSystem.DAL.Repositories.Classes;
 using GymSystem.DAL.Repositories.Interfaces;
@@ -19,7 +21,9 @@ namespace GymSystem
             });
             //builder.Services.AddScoped<IPlanrepository, PlanRepository>();
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+           //  builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IMemberServices, MemberServices>();
 
             var app = builder.Build();
 

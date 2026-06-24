@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymSystem.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class AllModules : Migration
+    public partial class initialPush : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace GymSystem.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
@@ -131,7 +131,9 @@ namespace GymSystem.DAL.Migrations
                     MemberId = table.Column<int>(type: "int", nullable: false),
                     PlanId = table.Column<int>(type: "int", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETDATE()")
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
