@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GymSystem.BLL.Common
+{
+    public record Result(bool Success, string? Error = null, ResultKind Kind = ResultKind.Ok)
+    {
+        public static Result Ok() => new Result(true);
+        public static Result Failed(string errorMessage, ResultKind kind = ResultKind.Conflict)
+            => new Result(false, errorMessage, kind);
+
+        public static Result NotFound(string errorMessage = "Not found")
+            => new Result(false, errorMessage, ResultKind.NotFound); 
+
+        public static Result ValidationFailed(string errorMessage = "Validation failed")
+            => new Result(false, errorMessage, ResultKind.ValidationFailed); 
+    }
+
+    public record Result<T>(bool Success, T? Value, string? Error = null, ResultKind Kind = ResultKind.Ok) : Result(Success, Error, Kind)
+    {
+        public static Result<T> Ok(T value) => new (true, value);
+        public static Result<T> Failed(string errorMessage, ResultKind kind = ResultKind.Conflict)
+            => new (false, default, errorMessage, kind);
+        public static Result<T> NotFound(string errorMessage = "Not found")
+            => new (false, default, errorMessage, ResultKind.NotFound);
+   
+    }  
+
+
+    public enum  ResultKind
+    {
+        Ok,
+        NotFound,
+        Conflict,
+        ValidationFailed,
+        Forbidden,
+        Error
+        
+    }
+
+}

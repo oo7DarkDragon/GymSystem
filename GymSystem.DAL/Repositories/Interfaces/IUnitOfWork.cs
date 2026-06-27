@@ -13,5 +13,9 @@ namespace GymSystem.DAL.Repositories.Interfaces
 
         public Task<int> CompleteAsync();
 
+        public ISessionRepository SessionRepository { get; }
+
+        
+
     }
 }
