@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace GymSystem.BLL.ViewModels.MembersViewModel
 {
     public class MemberViewModel
     {
+       
+
         public int Id { get; set; }
         public string? Photo { get; set; }
         public string Name { get; set; } = default!;

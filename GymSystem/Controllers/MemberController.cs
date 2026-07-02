@@ -1,9 +1,11 @@
 ﻿using GymSystem.BLL.Services.Interfaces;
 using GymSystem.BLL.ViewModels.MembersViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymSystem.Controllers
 {
+    [Authorize(Roles = "SuperAdmin")]
     public class MemberController : Controller
     {
         private readonly IMemberServices memberServices;
@@ -33,7 +35,13 @@ namespace GymSystem.Controllers
                 return View(nameof(Create),model);
             }
 
-            await memberServices.CreateMemberAsync(model, ct);
+            var result = await memberServices.CreateMemberAsync(model, ct);
+
+            if (result)
+                TempData["SuccessMessage"] = "Member created successfully.";
+            else
+                TempData["ErrorMessage"] = "Failed to create member.";
+                
 
             return RedirectToAction(nameof(Index));
         }

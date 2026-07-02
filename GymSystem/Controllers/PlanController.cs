@@ -1,34 +1,39 @@
-﻿using GymSystem.DAL.Context;
+﻿using GymSystem.BLL.Services.Interfaces;
+using GymSystem.DAL.Context;
 using GymSystem.DAL.Entities;
 using GymSystem.DAL.Repositories.Classes;
 using GymSystem.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymSystem.Controllers
 {
+    [Authorize]
     public class PlanController : Controller
     {
-        private readonly IGenericRepository<Plan> planRepository;
+        
+        private readonly IPlanServices _planServices;
 
-        public PlanController(IGenericRepository<Plan> _planRepository)
+        public PlanController(IPlanServices _planServices)
         {
-            planRepository = _planRepository;
+            this._planServices = _planServices;
         }
       
         public async Task<IActionResult> Index(CancellationToken token)
         {
-           var plans = await planRepository.GetAll(false, token);
+           var plans = await _planServices.GetAllPlansAsync(token);
             return View(plans);
         }
 
      public async Task<IActionResult> Details(int id, CancellationToken token)
         {
-            var plan = await planRepository.GetById(id);
+            var plan = await _planServices.GetPlanByIdAsync(id,token);
 
             if (plan == null)
             {
-                RedirectToAction(nameof(Index));
+                TempData["ErrorMessage"] = "Plan not found.";
+                return RedirectToAction(nameof(Index));
             }
 
             return View(plan);

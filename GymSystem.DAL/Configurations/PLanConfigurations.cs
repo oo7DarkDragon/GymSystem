@@ -22,7 +22,7 @@ namespace GymSystem.DAL.Configurations
 
             builder.ToTable(tb =>
             {
-                tb.HasCheckConstraint("DurationCheckValue", "Duration Between 1 and 365");
+                tb.HasCheckConstraint("DurationCheckValue", "Duration Between 1 and 366");
             });
 
         }

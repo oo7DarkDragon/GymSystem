@@ -1,4 +1,5 @@
-﻿using GymSystem.BLL.Services.Interfaces;
+﻿using AutoMapper;
+using GymSystem.BLL.Services.Interfaces;
 using GymSystem.BLL.ViewModels.MembersViewModel;
 using GymSystem.DAL.Entities;
 using GymSystem.DAL.Repositories.Interfaces;
@@ -13,10 +14,14 @@ namespace GymSystem.BLL.Services.Classes
     public class MemberServices : IMemberServices
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
+        private readonly IAttachmentServices attachmentServices;
 
-        public MemberServices(IUnitOfWork unitOfWork)
+        public MemberServices(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentServices attachmentServices)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
+            this.attachmentServices = attachmentServices;
         }
 
 
@@ -119,39 +124,31 @@ namespace GymSystem.BLL.Services.Classes
         //POST
         public async Task<bool> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct = default)
         {
-            var emailExists = await unitOfWork.GetRepository<Member>().AnyAsync(m => m.Email == model.Email, ct);
-            var phoneExists = await unitOfWork.GetRepository<Member>().AnyAsync(m => m.Phone == model.Phone, ct);
+            var repo = unitOfWork.GetRepository<Member>();
+
+            var emailExists = await repo.AnyAsync(m => m.Email == model.Email, ct);
+            var phoneExists = await repo.AnyAsync(m => m.Phone == model.Phone, ct);
 
             if(emailExists || phoneExists)
             {
                 return false;
             }
 
-            var member = new Member()
+            var member = mapper.Map<Member>(model);
+
+            if(model.PhotoFile is not null && model.PhotoFile.Length > 0)
             {
-                Name = model.Name,
-                Email = model.Email,
-                Phone = model.Phone,
-                DateOfBirth = model.DateOfBirth,
-                Gender = model.Gender,
-                Address = new Address()
-                {
-                    BuildingNumber = model.BuildingNumber,
-                    Street = model.Street,
-                    City = model.City
-                },
-                HealthRecord = new HealthRecord()
-                {
-                    Weight = model.HealthRecordViewModel.Weight,
-                    Height = model.HealthRecordViewModel.Height,
-                    BloodType = model.HealthRecordViewModel.BloodType,
-                    Note = model.HealthRecordViewModel.Note
-                }
-            };
+                var newPhotoName = await attachmentServices.UploadAsync(model.PhotoFile.OpenReadStream(), model.PhotoFile.FileName, "MemberPictures", ct);
+                if(string.IsNullOrEmpty(newPhotoName)) { return false; }
+                member.Photo = newPhotoName;
 
-            unitOfWork.GetRepository<Member>().add(member);
-            var result = await unitOfWork.GetRepository<Member>().CompleteAsync();
+            }
 
+
+
+            repo.add(member);
+            var result = await unitOfWork.CompleteAsync();
+            
             return result > 0;
 
         }
@@ -195,6 +192,7 @@ namespace GymSystem.BLL.Services.Classes
                 return false;
             }
 
+
             var hasActiveSessions = await unitOfWork.GetRepository<Booking>().AnyAsync(b => b.MemberId == memberId && b.Session.EndDate > DateTime.Now, ct);
 
             if(hasActiveSessions)
@@ -203,6 +201,10 @@ namespace GymSystem.BLL.Services.Classes
             }
             
             unitOfWork.GetRepository<Member>().remove(memberId);
+            if (member.Photo is not null) 
+            {
+                var isPhotoDeleted = attachmentServices.Delete(member.Photo, "MemberPictures");
+            }
             var result = await unitOfWork.GetRepository<Member>().CompleteAsync();
 
             return result > 0;

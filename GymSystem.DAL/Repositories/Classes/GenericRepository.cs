@@ -36,6 +36,9 @@ namespace GymSystem.DAL.Repositories.Classes
             return await dbContext.SaveChangesAsync();
         }
 
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken ct = default)
+            => predicate is null ? dbContext.Set<TEntity>().AsNoTracking().CountAsync(ct) : dbContext.Set<TEntity>().AsNoTracking().CountAsync(predicate, ct);
+
         public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool isTracked = false, CancellationToken ct = default)
         {
             var entity = isTracked ? dbContext.Set<TEntity>() : dbContext.Set<TEntity>().AsNoTracking();

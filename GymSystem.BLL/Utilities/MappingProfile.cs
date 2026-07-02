@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymSystem.BLL.ViewModels.MembersViewModel;
 using GymSystem.BLL.ViewModels.SessionViewModels;
 using GymSystem.DAL.Entities;
 using System;
@@ -29,6 +30,10 @@ namespace GymSystem.BLL.Utilities
             CreateMap<Category, CategorySelectViewModel>();
 
             CreateMap<Session, UpdateSessionViewModel>().ReverseMap();
+            CreateMap<CreateMemberViewModel, Member>()
+                .ForPath(dest => dest.Address.BuildingNumber, opt => opt.MapFrom(src => src.BuildingNumber))
+                .ForPath(dest => dest.Address.Street, opt => opt.MapFrom(src => src.Street))
+                .ForPath(dest => dest.Address.City, opt => opt.MapFrom(src => src.City));
         }
 
     }
